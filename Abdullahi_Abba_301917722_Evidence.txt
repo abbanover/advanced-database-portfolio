@@ -1,0 +1,141 @@
+MIT 8103 EVIDENCE - Abba Abdullahi (301917722) - outputs of the scripts, run with Python 3 / SQLite 3.45 on 17 Oct 2026
+NOTE: timings vary by computer. The screenshots (P2-P5) show the same scripts run on my MacBook (P2: 1340.9 ms -> 36.7 ms, about 37x faster).
+
+################ PORTFOLIO 1 - Schema checks ################
+Tables created: ['books', 'categories', 'fines', 'loans', 'members']
+categories: 5 rows
+books: 10 rows
+members: 6 rows
+loans: 12 rows
+fines: 2 rows
+Foreign key violations found: []
+Bad loan (member 99 does not exist) rejected -> FOREIGN KEY constraint failed
+available_copies > total_copies rejected -> CHECK constraint failed: available_copies <= total_copies
+
+################ PORTFOLIO 2 - Queries, plans, indexing ################
+=== Query results ===
+
+-- Q1
+('Fatima Yusuf', 'Half of a Yellow Sun', '2026-09-29', 18)
+('Emeka Nwosu', 'Sapiens', '2026-10-15', 2)
+
+-- Q2
+('Designing Data-Intensive Applications', 2)
+('Pride and Prejudice', 2)
+('The C Programming Language', 2)
+
+-- Q3
+('Aisha Bello', 200)
+('Chinedu Okafor', 350)
+
+-- Q4
+(3, 2, '2026-09-05', '2026-09-19', '2026-09-18')
+(4, 4, '2026-09-10', '2026-09-24', '2026-10-01')
+
+=== Execution plans BEFORE indexes (Q4) ===
+SCAN l
+
+=== Execution plans BEFORE indexes (Q2) ===
+SCAN l
+SEARCH b USING INTEGER PRIMARY KEY (rowid=?)
+USE TEMP B-TREE FOR GROUP BY
+USE TEMP B-TREE FOR ORDER BY
+
+=== Execution plans AFTER indexes (Q4) ===
+SEARCH l USING INDEX idx_loans_member_id (member_id=?)
+
+=== Execution plans AFTER indexes (Q2) ===
+SCAN b
+SEARCH l USING COVERING INDEX idx_loans_book_id (book_id=?)
+USE TEMP B-TREE FOR ORDER BY
+
+=== Performance test: 100,000 loans, 2,000 members ===
+Plan before: ['SCAN loans']
+Without index: 300 lookups took 753.4 ms
+Plan after:  ['SEARCH loans USING INDEX idx_loans_member_id (member_id=?)']
+With index   : 300 lookups took 16.1 ms
+Speed-up: about 47x faster
+
+################ PORTFOLIO 3 - Transactions and concurrency ################
+=== Test 1: successful transaction (COMMIT) ===
+Before: loans = 12 | copies of book 4 = 3
+Result: COMMITTED
+After:  loans = 13 | copies of book 4 = 2
+
+=== Test 2: failing transaction (ROLLBACK) ===
+Book 10 has only 1 copy and it is already borrowed (available = 0 )
+Before: loans = 13
+Result: ROLLED BACK (CHECK constraint failed: available_copies >= 0)
+After:  loans = 13 (unchanged - the loan INSERT was undone, so no half-finished data)
+
+=== Test 3: concurrency control (two users at the same time) ===
+User A started borrowing book 2 (not committed yet). A sees copies = 1
+User B reads book 2 meanwhile and sees copies = 2 -> no dirty read (isolation)
+User B tries to write book 2 at the same time -> database is locked -> blocked, so no lost update
+User A COMMITTED.
+User B retries after A finished: B now sees copies = 1
+User B COMMITTED. Final copies of book 2 = 0 (2 total - 2 borrowers = 0, correct)
+
+################ PORTFOLIO 4 - NoSQL ################
+Saved 10 book documents to Abdullahi_Abba_301917722_P4_Documents.json
+
+Sample document (book 3):
+{
+  "_id": 3,
+  "isbn": "9781449373320",
+  "title": "Designing Data-Intensive Applications",
+  "author": "Martin Kleppmann",
+  "category": "Computing",
+  "copies": {
+    "total": 2,
+    "available": 2
+  },
+  "loans": [
+    {
+      "member": "Aisha Bello",
+      "borrowed": "2026-09-02",
+      "due": "2026-09-16",
+      "returned": "2026-09-20"
+    },
+    {
+      "member": "Emeka Nwosu",
+      "borrowed": "2026-09-20",
+      "due": "2026-10-04",
+      "returned": "2026-10-03"
+    }
+  ]
+}
+
+=== Query 1: Computing books with copies available ===
+The C Programming Language | available: 2
+Introduction to Algorithms | available: 2
+Designing Data-Intensive Applications | available: 2
+
+=== Query 2: Books ever borrowed by Chinedu Okafor ===
+Introduction to Algorithms
+Pride and Prejudice
+
+=== Query 3: Loan count per book (aggregation) ===
+The C Programming Language -> 2 loans
+Designing Data-Intensive Applications -> 2 loans
+Pride and Prejudice -> 2 loans
+
+=== Key-value example (fast availability check, like Redis) ===
+GET book:4:available -> 3
+
+################ PORTFOLIO 5 - Distributed ################
+=== 1. Replication (primary + read replica) ===
+After first sync: primary loans = 12 | replica loans = 12
+New loan written to primary: primary = 13 | replica = 12 -> replica is briefly behind (eventual consistency)
+After replication catches up: replica = 13 -> consistent again
+
+=== 2. Availability / failover ===
+Primary goes DOWN. Readers are sent to the replica instead:
+Replica still answers: The C Programming Language
+(Writes pause until a replica is promoted to primary - consistency is chosen over write availability.)
+
+=== 3. Sharding loans by member_id (2 shards) ===
+Shard 0: 6 loans, members [2, 4, 6]
+Shard 1: 7 loans, members [1, 3, 5]
+Query for member 3 goes only to shard 1 -> 2 loans
+Total loans across all shards (scatter-gather query): 13
