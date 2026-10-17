@@ -1,0 +1,203 @@
+[
+  {
+    "_id": 1,
+    "isbn": "9780131103627",
+    "title": "The C Programming Language",
+    "author": "Brian Kernighan",
+    "category": "Computing",
+    "copies": {
+      "total": 3,
+      "available": 2
+    },
+    "loans": [
+      {
+        "member": "Aisha Bello",
+        "borrowed": "2026-09-01",
+        "due": "2026-09-15",
+        "returned": "2026-09-14"
+      },
+      {
+        "member": "Zainab Musa",
+        "borrowed": "2026-10-06",
+        "due": "2026-10-20",
+        "returned": null
+      }
+    ]
+  },
+  {
+    "_id": 2,
+    "isbn": "9780262033848",
+    "title": "Introduction to Algorithms",
+    "author": "Thomas Cormen",
+    "category": "Computing",
+    "copies": {
+      "total": 2,
+      "available": 2
+    },
+    "loans": [
+      {
+        "member": "Chinedu Okafor",
+        "borrowed": "2026-09-05",
+        "due": "2026-09-19",
+        "returned": "2026-09-18"
+      }
+    ]
+  },
+  {
+    "_id": 3,
+    "isbn": "9781449373320",
+    "title": "Designing Data-Intensive Applications",
+    "author": "Martin Kleppmann",
+    "category": "Computing",
+    "copies": {
+      "total": 2,
+      "available": 2
+    },
+    "loans": [
+      {
+        "member": "Aisha Bello",
+        "borrowed": "2026-09-02",
+        "due": "2026-09-16",
+        "returned": "2026-09-20"
+      },
+      {
+        "member": "Emeka Nwosu",
+        "borrowed": "2026-09-20",
+        "due": "2026-10-04",
+        "returned": "2026-10-03"
+      }
+    ]
+  },
+  {
+    "_id": 4,
+    "isbn": "9780141439518",
+    "title": "Pride and Prejudice",
+    "author": "Jane Austen",
+    "category": "Fiction",
+    "copies": {
+      "total": 4,
+      "available": 3
+    },
+    "loans": [
+      {
+        "member": "Chinedu Okafor",
+        "borrowed": "2026-09-10",
+        "due": "2026-09-24",
+        "returned": "2026-10-01"
+      },
+      {
+        "member": "Aisha Bello",
+        "borrowed": "2026-10-10",
+        "due": "2026-10-24",
+        "returned": null
+      }
+    ]
+  },
+  {
+    "_id": 5,
+    "isbn": "9780061120084",
+    "title": "To Kill a Mockingbird",
+    "author": "Harper Lee",
+    "category": "Fiction",
+    "copies": {
+      "total": 2,
+      "available": 2
+    },
+    "loans": []
+  },
+  {
+    "_id": 6,
+    "isbn": "9780553380163",
+    "title": "A Brief History of Time",
+    "author": "Stephen Hawking",
+    "category": "Science",
+    "copies": {
+      "total": 2,
+      "available": 2
+    },
+    "loans": [
+      {
+        "member": "Fatima Yusuf",
+        "borrowed": "2026-09-12",
+        "due": "2026-09-26",
+        "returned": "2026-09-25"
+      }
+    ]
+  },
+  {
+    "_id": 7,
+    "isbn": "9780385537858",
+    "title": "Half of a Yellow Sun",
+    "author": "Chimamanda Adichie",
+    "category": "Fiction",
+    "copies": {
+      "total": 3,
+      "available": 2
+    },
+    "loans": [
+      {
+        "member": "Fatima Yusuf",
+        "borrowed": "2026-09-15",
+        "due": "2026-09-29",
+        "returned": null
+      }
+    ]
+  },
+  {
+    "_id": 8,
+    "isbn": "9780143127741",
+    "title": "Sapiens",
+    "author": "Yuval Noah Harari",
+    "category": "History",
+    "copies": {
+      "total": 2,
+      "available": 1
+    },
+    "loans": [
+      {
+        "member": "Emeka Nwosu",
+        "borrowed": "2026-10-01",
+        "due": "2026-10-15",
+        "returned": null
+      }
+    ]
+  },
+  {
+    "_id": 9,
+    "isbn": "9780385474542",
+    "title": "Things Fall Apart",
+    "author": "Chinua Achebe",
+    "category": "Fiction",
+    "copies": {
+      "total": 3,
+      "available": 2
+    },
+    "loans": [
+      {
+        "member": "Zainab Musa",
+        "borrowed": "2026-10-05",
+        "due": "2026-10-19",
+        "returned": null
+      }
+    ]
+  },
+  {
+    "_id": 10,
+    "isbn": "9781591846444",
+    "title": "Zero to One",
+    "author": "Peter Thiel",
+    "category": "Business",
+    "copies": {
+      "total": 1,
+      "available": 0
+    },
+    "loans": [
+      {
+        "member": "Tunde Adeyemi",
+        "borrowed": "2026-10-08",
+        "due": "2026-10-22",
+        "returned": null
+      }
+    ]
+  }
+]
